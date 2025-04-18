@@ -5,6 +5,10 @@ import (
 	"net/http"
 )
 
+type WeatherParams struct {
+	Day string
+}
+
 type WeatherDataResponse struct {
 
 	Code int
