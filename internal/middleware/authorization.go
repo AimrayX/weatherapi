@@ -16,27 +16,14 @@ func Authorization(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		
 		var token = r.Header.Get("Authorization")
-		var err error
 
-
-		if token == "" {
+		if token != "1234567890" {
 			log.Error(UnauthorizedError)
 			api.RequestErrorHandler(w, UnauthorizedError)
 			return
 		}
 
-		var database *tools.DatabaseInterface
-		database, err = tools.NewDatabase()
-		if err != nil {
-			api.InternalErrorHandler(w)
-			return
-		}
-
-		var weatherDetails *tools.weatherDetails
-		weatherDetails = (*database).GetWeatherData()
-
-		if (weatherDetails == nil || (token != )) {
-			
-		}
+		next.ServeHTTP(w, r)
+		
 	})
 }
