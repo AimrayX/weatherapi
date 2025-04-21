@@ -8,6 +8,7 @@ import (
 
 func Handler(r *chi.Mux) {
 	r.Use(chimiddle.StripSlashes)
+	r.Use(middleware.WithCORS)
 	r.Route("/weatherdata", func(router chi.Router) {
 
 		router.Use(middleware.Authorization)

@@ -1,13 +1,13 @@
 package handlers
 
 import (
-	"encoding/json"
+	"html/template"
 	"net/http"
 
 	"github.com/AimrayX/weatherapi/api"
 	"github.com/AimrayX/weatherapi/internal/tools"
-	log "github.com/sirupsen/logrus"
 	"github.com/gorilla/schema"
+	log "github.com/sirupsen/logrus"
 )
 
 func GetWeatherData(w http.ResponseWriter, r *http.Request) {
@@ -40,16 +40,18 @@ func GetWeatherData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var response = api.WeatherDataResponse{
-		Temperature: (*weatherDetails).Temperature,
-		Humidity: (*weatherDetails).Humidity,
-		Code: http.StatusOK,
+	// Assume we want to return HTML (you can check for r.URL.Query().Get("format") if needed)
+	tmpl, err := template.ParseFiles("internal/templates/weather.html")
+	if err != nil {
+		log.Error("Template parsing error:", err)
+		api.InternalErrorHandler(w)
+		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(response)
+	w.Header().Set("Content-Type", "text/html")
+	err = tmpl.Execute(w, weatherDetails)
 	if err != nil {
-		log.Error(err)
+		log.Error("Template execution error:", err)
 		api.InternalErrorHandler(w)
 		return
 	}
