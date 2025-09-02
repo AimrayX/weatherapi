@@ -21,7 +21,7 @@ func InitDB(path string) error {
 
 func GetWeatherData() http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
-        rows, err := db.Query("SELECT city, temperature FROM weather")
+        rows, err := db.Query("SELECT id, timestamp, temperature, humidity, pressure, gas_resistance, light, pm2_5, wind_speed, wind_direction FROM sensor_data")
         if err != nil {
             http.Error(w, err.Error(), http.StatusInternalServerError)
             return
@@ -30,15 +30,34 @@ func GetWeatherData() http.HandlerFunc {
 
         var results []map[string]interface{}
         for rows.Next() {
-            var city string
+            var timestamp string
             var temp float64
+	    var id int
+	    var temp float64
+	    var humidity float64
+	    var pressure float64
+	    var gas float64
+	    var light int
+	    var pm2_5 int
+	    var wind_speed float64
+	    var wind_direction float64
+
             if err := rows.Scan(&city, &temp); err != nil {
                 http.Error(w, err.Error(), http.StatusInternalServerError)
                 return
             }
             results = append(results, map[string]interface{}{
-                "city":        city,
+                "id":        id,
+		"timestamp": timestamp,
                 "temperature": temp,
+		"humidity": humidty,
+		"pressure": pressure,
+		"gas_resistance": gas,
+		"light": light,
+		"pm2_5": pm2_5,
+		"wind_speed": wind_speed,
+		"wind_direction": wind_direction,
+
             })
         }
 
