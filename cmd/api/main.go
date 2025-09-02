@@ -11,7 +11,7 @@ import (
 
 func main() {
 
-	if err := handlers.InitDB("../../weather.db"); err != nil {
+	if err := handlers.InitDB("/home/weatherstation/code/weather.db"); err != nil {
         log.Fatal(err)
         }
 
@@ -21,7 +21,7 @@ func main() {
 
 	fmt.Println("Starting GO API...")
 
-	err := http.ListenAndServe("localhost:8000", r)
+	err := http.ListenAndServe("0.0.0.0:8000", r)
 	if err != nil {
 		log.Error(err)
 	}

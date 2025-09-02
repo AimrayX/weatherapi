@@ -31,7 +31,6 @@ func GetWeatherData() http.HandlerFunc {
         var results []map[string]interface{}
         for rows.Next() {
             var timestamp string
-            var temp float64
 	    var id int
 	    var temp float64
 	    var humidity float64
@@ -42,7 +41,7 @@ func GetWeatherData() http.HandlerFunc {
 	    var wind_speed float64
 	    var wind_direction float64
 
-            if err := rows.Scan(&city, &temp); err != nil {
+            if err := rows.Scan(&id, &timestamp, &temp, &humidity, &pressure, &gas, &light, &pm2_5, &wind_speed, &wind_direction); err != nil {
                 http.Error(w, err.Error(), http.StatusInternalServerError)
                 return
             }
@@ -50,7 +49,7 @@ func GetWeatherData() http.HandlerFunc {
                 "id":        id,
 		"timestamp": timestamp,
                 "temperature": temp,
-		"humidity": humidty,
+		"humidity": humidity,
 		"pressure": pressure,
 		"gas_resistance": gas,
 		"light": light,
