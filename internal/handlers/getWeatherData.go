@@ -1,7 +1,9 @@
 package handlers
 
 import (
-	"github.com/AimrayX/piweatherstation/internal/sensors"
+    "encoding/json"
+	"net/http"
+	"github.com/AimrayX/weatherstation/internal/sensors"
 	"database/sql"
         _ "github.com/mattn/go-sqlite3"
 )
