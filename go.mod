@@ -1,4 +1,4 @@
-module github.com/AimrayX/piweatherstation
+module github.com/AimrayX/weatherapi
 
 go 1.24.4
 

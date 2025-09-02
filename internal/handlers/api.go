@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/go-chi/chi"
 	chimiddle "github.com/go-chi/chi/middleware"
-	"github.com/AimrayX/weatherstation/internal/middleware"
+	"github.com/AimrayX/weatherapi/internal/middleware"
 )
 
 func Handler(r *chi.Mux) {

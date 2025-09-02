@@ -3,7 +3,6 @@ package handlers
 import (
     "encoding/json"
 	"net/http"
-	"github.com/AimrayX/weatherstation/internal/sensors"
 	"database/sql"
         _ "github.com/mattn/go-sqlite3"
 )
