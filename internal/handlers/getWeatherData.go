@@ -1,7 +1,7 @@
 package handlers
 
 import (
-    "encoding/json"
+    "fmt"
 	"net/http"
 	"database/sql"
         _ "github.com/mattn/go-sqlite3"
@@ -28,39 +28,60 @@ func GetWeatherData() http.HandlerFunc {
         }
         defer rows.Close()
 
-        var results []map[string]interface{}
-        for rows.Next() {
-            var timestamp string
-	    var id int
-	    var temp float64
-	    var humidity float64
-	    var pressure float64
-	    var gas float64
-	    var light int
-	    var pm2_5 int
-	    var wind_speed float64
-	    var wind_direction float64
+        w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
-            if err := rows.Scan(&id, &timestamp, &temp, &humidity, &pressure, &gas, &light, &pm2_5, &wind_speed, &wind_direction); err != nil {
+        // Simple HTML table
+        fmt.Fprintln(w, `<table class="weather-data">`)
+        fmt.Fprintln(w, `<thead>
+            <tr>
+                <th>Time</th>
+                <th>Temp (°C)</th>
+                <th>Humidity (%)</th>
+                <th>Pressure (hPa)</th>
+                <th>Gas</th>
+                <th>Light</th>
+                <th>PM2.5</th>
+                <th>Wind Speed</th>
+                <th>Wind Dir</th>
+            </tr>
+        </thead>
+        <tbody>`)
+
+        for rows.Next() {
+            var (
+                id            int
+                timestamp     string
+                temp          float64
+                humidity      float64
+                pressure      float64
+                gas           float64
+                light         int
+                pm2_5          int
+                windSpeed     float64
+                windDirection float64
+            )
+
+            if err := rows.Scan(&id, &timestamp, &temp, &humidity, &pressure, &gas, &light, &pm2_5, &windSpeed, &windDirection); err != nil {
                 http.Error(w, err.Error(), http.StatusInternalServerError)
                 return
             }
-            results = append(results, map[string]interface{}{
-                "id":        id,
-		"timestamp": timestamp,
-                "temperature": temp,
-		"humidity": humidity,
-		"pressure": pressure,
-		"gas_resistance": gas,
-		"light": light,
-		"pm2_5": pm2_5,
-		"wind_speed": wind_speed,
-		"wind_direction": wind_direction,
 
-            })
+            fmt.Fprintf(w,
+                `<tr>
+                    <td>%s</td>
+                    <td>%.1f</td>
+                    <td>%.1f</td>
+                    <td>%.1f</td>
+                    <td>%.1f</td>
+                    <td>%d</td>
+                    <td>%d</td>
+                    <td>%.1f</td>
+                    <td>%.1f</td>
+                </tr>`,
+                timestamp, temp, humidity, pressure, gas, light, pm2_5, windSpeed, windDirection,
+            )
         }
 
-        w.Header().Set("Content-Type", "application/json")
-        json.NewEncoder(w).Encode(results)
+        fmt.Fprintln(w, `</tbody></table>`)
     }
 }
